@@ -16,8 +16,8 @@ const Navbar = () => {
     const pathname = usePathname();
 
 
-    const user = { name: "Shafiqul Islam", email: "arif@example.com" }; 
-    // const user = null 
+    // const user = { name: "Shafiqul Islam", email: "arif@example.com" }; 
+    const user = null 
 
     useEffect(() => {
         const handleScroll = () => {
@@ -164,14 +164,14 @@ const Navbar = () => {
                             /* Login + register */
                             <div className="flex items-center space-x-3">
                                 <Link
-                                    href="/login"
+                                    href="/auth/login"
                                     className="flex items-center space-x-1.5 px-5 py-2.5 rounded-full text-sm font-medium bg-[#fdece9] text-slate-600 hover:bg-slate-100  transition-all"
                                 >
                                     <LogIn className="h-4 w-4 text-[#FF4D30]" />
                                     <span>Login</span>
                                 </Link>
                                 <Link
-                                    href="/register"
+                                    href="/auth/register"
                                     className="flex items-center space-x-1.5 px-5 py-2.5 bg-[#FF4D30] hover:bg-[#e03a1e] text-white rounded-full text-sm font-medium shadow-md hover:shadow-lg transition-all transform active:scale-95"
                                 >
                                     <UserPlus className="h-4 w-4" />
