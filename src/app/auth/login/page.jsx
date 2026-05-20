@@ -5,38 +5,45 @@ import Link from 'next/link';
 import { Car } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
+import { authClient } from '@/lib/auth-client';
 
 const LoginPage = () => {
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    });
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
 
-    const handleGoogleLogin = () => {
-        toast.success('Google authentication successful! Redirecting...');
-    };
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Basic verification checkpoint
-        if (!formData.email || !formData.password) {
-            toast.error('Please fulfill all required credentials.');
-            return;
-        }
+        const formData = new FormData(e.target);
+        const { email, password } = Object.fromEntries(formData.entries())
 
-        toast.success('Login successful! Welcome back.');
-        console.log('Valid Login Payload:', formData);
+        const { data, error } = await authClient.signIn.email({
+
+            email,
+            password,
+            callbackURL: "/",
+            rememberMe: true
+        }, {
+            //callbacks
+        });
+        if (data) {
+            toast.success("Login Successful. Redirecting...")
+        } else if (error) {
+            toast.error(error.message)
+        }
     };
 
+    const handleGoogleLogin = async() => {
+        await authClient.signIn.social({
+            /**
+             * The social provider ID
+             * @example "github", "google", "apple"
+             */
+            provider: "google",
+            callbackURL: "/",
+            errorCallbackURL: "/error",
+        })
+    };
+    
     return (
         <section className="min-h-screen bg-slate-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 lg:py-20 mt-20 font-sans">
             <div className="max-w-4xl w-full bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden grid md:grid-cols-12">
@@ -88,8 +95,6 @@ const LoginPage = () => {
                                 type="email"
                                 name="email"
                                 required
-                                value={formData.email}
-                                onChange={handleInputChange}
                                 placeholder="name@domain.com"
                                 className="w-full bg-slate-50 border border-slate-200 text-slate-900 px-4 py-3 rounded-xl outline-none focus:border-[#FF4D30] focus:bg-white transition-colors text-sm placeholder:text-slate-400"
                             />
@@ -104,8 +109,6 @@ const LoginPage = () => {
                                 type="password"
                                 name="password"
                                 required
-                                value={formData.password}
-                                onChange={handleInputChange}
                                 placeholder="Enter your secure password"
                                 className="w-full bg-slate-50 border border-slate-200 text-slate-900 px-4 py-3 rounded-xl outline-none focus:border-[#FF4D30] focus:bg-white transition-colors text-sm placeholder:text-slate-400"
                             />
@@ -132,14 +135,14 @@ const LoginPage = () => {
                             onClick={handleGoogleLogin}
                             className="w-full bg-white hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 border border-slate-200 rounded-xl transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider cursor-pointer"
                         >
-                            <Image 
-                                width={16} 
-                                height={16} 
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Google_Favicon_2025.svg/960px-Google_Favicon_2025.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail&_=20251015042304" 
-                                alt="google" 
-                                className="h-4 w-4" 
+                            <Image
+                                width={16}
+                                height={16}
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Google_Favicon_2025.svg/960px-Google_Favicon_2025.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail&_=20251015042304"
+                                alt="google"
+                                className="h-4 w-4"
                             />
-                            Login with Google 
+                            Login with Google
                         </button>
                     </form>
                 </div>

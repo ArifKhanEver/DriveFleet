@@ -2,22 +2,33 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     Car, LogIn, UserPlus, LogOut, PlusCircle,
     Briefcase, CheckSquare, Menu, X, ChevronDown,
     CarFrontIcon
 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import Image from "next/image";
+import { Avatar, Spinner } from "@heroui/react";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
     const pathname = usePathname();
+    const router = useRouter();
 
+    const {
+        data: session,
+        isPending, //loading state
+        error, //error object
+        refetch //refetch the session
+    } = authClient.useSession()
 
-    // const user = { name: "Shafiqul Islam", email: "arif@example.com" }; 
-    const user = null 
+    const user = session?.user;
+
 
     useEffect(() => {
         const handleScroll = () => {
@@ -30,7 +41,7 @@ const Navbar = () => {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
-
+    
     const isActive = (path) => pathname === path;
 
     return (
@@ -100,15 +111,18 @@ const Navbar = () => {
 
                     {/* ৩. Profile Section */}
                     <div className="hidden md:flex items-center space-x-4">
-                        {user ? (
+                        {isPending ? <Spinner color="danger" /> : user ? (
                             /* profile dropdown links */
                             <div className="relative">
                                 <button
                                     onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                                    className="flex items-center space-x-2 bg-slate-100 p-1.5 pr-3 rounded-full hover:bg-slate-200 transition-all border border-slate-200 "
+                                    className="flex items-center space-x-2 bg-slate-100 p-2 pr-3 rounded-full hover:bg-slate-200 transition-all border border-slate-200 cursor-pointer"
                                 >
-                                    <div className="h-8 w-8 rounded-full bg-[#FF4D30] text-white flex items-center justify-center font-bold text-sm shadow-inner">
-                                        {user.name.charAt(0)}
+                                    <div className="h-8 w-8 rounded-full bg-[#FF4D30] text-white flex items-center justify-center font-bold text-sm shadow-inner uppercase">
+                                        <Avatar>
+                                            <Avatar.Image alt={user?.name} src={user?.image} />
+                                            <Avatar.Fallback>JD</Avatar.Fallback>
+                                        </Avatar>
                                     </div>
                                     <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
                                         My Account
@@ -119,8 +133,8 @@ const Navbar = () => {
                                 {isProfileDropdownOpen && (
                                     <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 animate-in fade-in slide-in-from-top-5 duration-200">
                                         <div className="px-4 py-2 border-b border-slate-100 mb-1">
-                                            <p className="text-xs text-slate-400">Signed in as</p>
-                                            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 truncate">{user.email}</p>
+                                            <p className="text-xs text-slate-400 capitalize">Signed in as <strong className="text-black">{user?.name}</strong></p>
+                                            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 truncate">{user?.email}</p>
                                         </div>
                                         <Link
                                             href="/add-car"
@@ -148,11 +162,20 @@ const Navbar = () => {
                                         </Link>
                                         <hr className="border-slate-100 dark:border-slate-800 my-1" />
                                         <button
-                                            onClick={() => {
+                                            onClick={async() => {
+                                                await authClient.signOut({
+                                                    fetchOptions: {
+                                                        onSuccess: () => {
+                                                            toast.error("Logged Out");
+                                                            router.replace("/auth/login"); 
+                                                            router.refresh();
+                                                        },
+                                                    },
+                                                });
                                                 setIsProfileDropdownOpen(false);
-                                            
+
                                             }}
-                                            className="w-full flex items-center space-x-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                                            className="w-full flex items-center space-x-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
                                         >
                                             <LogOut className="h-4 w-4" />
                                             <span>Logout</span>
@@ -212,7 +235,7 @@ const Navbar = () => {
                             }`}
                     >
                         Explore Cars
-                    </Link>                    
+                    </Link>
 
                     {user && (
                         <>
