@@ -5,13 +5,12 @@ import Link from 'next/link';
 import { Car } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
+import { authClient } from '@/lib/auth-client';
+import { redirect } from 'next/navigation';
 
 const RegisterPage = () => {
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        photoUrl: '',
-        password: '',
+        password: ''
     });
 
     const [passwordErrors, setPasswordErrors] = useState({
@@ -26,7 +25,7 @@ const RegisterPage = () => {
         setPasswordErrors({
             hasUpper: /[A-Z]/.test(pass),
             hasLower: /[a-z]/.test(pass),
-            hasLength: pass.length >= 6,
+            hasLength: pass.length >= 8,
         });
     }, [formData.password]);
 
@@ -34,16 +33,39 @@ const RegisterPage = () => {
 
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (!passwordErrors.hasUpper || !passwordErrors.hasLower || !passwordErrors.hasLength) {
             toast.error("Please enter strong password")
             return;
         }
 
-        toast.success('Registration successful! Redirecting to login page...');
-        console.log('Valid Registration Payload:', formData);
+        const formData = new FormData(e.target)
+        const { name, email, image, password } = Object.fromEntries(formData.entries())
+
+        console.log(password)
+
+        const { data, error } = await authClient.signUp.email({
+            name,
+            email,
+            image,
+            password,
+            callbackURL: "/auth/login" // A URL to redirect to after the user verifies their email (optional)
+        }, {
+            onRequest: (ctx) => {
+                //show loading
+            },
+            onSuccess: (ctx) => {
+                toast.success('Registration Successful')
+                redirect('/auth/login')
+            },
+            onError: (ctx) => {
+                // display the error message
+                toast.error(ctx.error.message);
+            },
+        });
+
+
     };
 
     return (
@@ -143,7 +165,7 @@ const RegisterPage = () => {
                             <div className="pt-2 grid grid-cols-1 sm:grid-cols-3 gap-1.5 text-[11px] font-semibold">
                                 <div className={`flex items-center gap-1.5 ${passwordErrors.hasLength ? 'text-emerald-600' : 'text-slate-400'}`}>
                                     <span className={`w-1.5 h-1.5 rounded-full ${passwordErrors.hasLength ? 'bg-emerald-500' : 'bg-slate-300'}`}></span>
-                                    At least 6 characters
+                                    At least 8 characters
                                 </div>
                                 <div className={`flex items-center gap-1.5 ${passwordErrors.hasUpper ? 'text-emerald-600' : 'text-slate-400'}`}>
                                     <span className={`w-1.5 h-1.5 rounded-full ${passwordErrors.hasUpper ? 'bg-emerald-500' : 'bg-slate-300'}`}></span>
