@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import Image from "next/image";
 import Link from "next/link";
+import { BookingDeleteModal } from "@/components/BookingDeleteModal";
 
 export default async function MyBookingsPage() {
     const { user } = await auth.api.getSession({
@@ -151,11 +152,7 @@ export default async function MyBookingsPage() {
                                         >
                                             View Details <ChevronRight className="size-3.5" />
                                         </Link>
-                                        <Button
-                                            className="w-full bg-transparent hover:bg-red-50 text-slate-400 hover:text-red-600 font-bold text-xs h-10 rounded-xl transition-colors flex items-center justify-center gap-1 cursor-pointer"
-                                        >
-                                            <Trash2 className="size-3.5" /> Cancel Booking
-                                        </Button>
+                                        <BookingDeleteModal booking={booking}></BookingDeleteModal>
                                     </div>
 
                                 </div>

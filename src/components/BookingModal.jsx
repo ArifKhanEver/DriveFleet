@@ -5,10 +5,12 @@ import { Button, Modal, TextField, Label } from "@heroui/react";
 import { Calendar, UserCheck, FileText, Car, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
+import {  useRouter } from "next/navigation";
 
 export default function BookingModal({ car }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const router = useRouter()
 
     const { data: session } = authClient.useSession()
     const user = session?.user;
@@ -97,6 +99,7 @@ export default function BookingModal({ car }) {
             setIsSubmitting(false);
             setIsOpen(false);
             toast.success("Booking Confirmation Successful!");
+            router.replace('/my-bookings')
         }, 1500);
     };
 
