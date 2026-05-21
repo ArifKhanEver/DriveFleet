@@ -70,7 +70,7 @@ const AvailableCars = () => {
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
                     <AnimatePresence mode="popLayout">
-                        {filteredCars.map((car) => (
+                        {filteredCars.sort(() => 0.5 - Math.random()).slice(0, 6).map((car) => (
                             <CarCard car={car} key={car._id}></CarCard>
                         ))}
                     </AnimatePresence>

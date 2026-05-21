@@ -3,12 +3,19 @@
 import React, { useState } from 'react';
 import { Car, DollarSign, MapPin, Calendar, FileText, Layers, Image, Users, Fuel } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { authClient } from '@/lib/auth-client';
 
 export default function AddCarPage() {
     const [loading, setLoading] = useState(false);
+    const { data: session } = authClient.useSession()
+    const user = session?.user;
 
     const handleAddCar = async (e) => {
         e.preventDefault();
+        if (!user?.email) {
+            toast.error('You must be logged in to add a car!');
+            return;
+        }
         setLoading(true);
 
         const formData = new FormData(e.currentTarget);
@@ -17,6 +24,8 @@ export default function AddCarPage() {
         carData.dailyPrice = parseFloat(carData.dailyPrice);
         carData.year = parseInt(carData.year);
         carData.seats = parseInt(carData.seats);
+        carData.addedBy = user.email;
+
 
         try {
             const res = await fetch('http://localhost:5000/cars', {
@@ -24,10 +33,10 @@ export default function AddCarPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(carData)
             });
-            const data = res.json();
+            const data = await res.json();
             console.log(data)
             console.log("Structured Car Payload:", carData);
-            
+
             toast.success('Premium vehicle listed successfully!');
             e.target.reset();
         } catch (error) {
@@ -40,7 +49,7 @@ export default function AddCarPage() {
     return (
         <main className="min-h-screen bg-slate-50/50 py-12 px-4 sm:px-6 lg:px-8 font-sans lg:mt-20">
             <div className="max-w-3xl mx-auto bg-white border border-slate-200/80 rounded-2xl shadow-xl shadow-slate-100/50 overflow-hidden relative">
-                
+
                 <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#FF4D30]" />
 
                 {/* Header Section */}
@@ -57,7 +66,7 @@ export default function AddCarPage() {
                 </div>
 
                 <form onSubmit={handleAddCar} className="p-8 space-y-6">
-                    
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Car Model Name</label>
