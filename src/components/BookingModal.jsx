@@ -12,6 +12,7 @@ export default function BookingModal({ car }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const router = useRouter()
 
+
     const { data: session } = authClient.useSession()
     const user = session?.user;
 
@@ -54,8 +55,12 @@ export default function BookingModal({ car }) {
 
    const handleConfirmBooking = async (e) => {
     e.preventDefault();
+
+    const {data:tokenData} = authClient.token()
+
+
     if (!user?.email) {
-        toast.error('You must be logged in to book a car!'); // 💡 টোস্ট মেসেজের টাইপো ঠিক করা হয়েছে (add -> book)
+        toast.error('You must be logged in to book a car!');
         return;
     }
 
@@ -70,7 +75,7 @@ export default function BookingModal({ car }) {
     setIsSubmitting(true);
 
     const bookingData = {
-        carId: car?._id, // 🔥 এটি ব্যাকএন্ডের $inc এর জন্য ১০০% সঠিক আছে
+        carId: car?._id, 
         userEmail: user?.email,
         carName: car?.carName,
         carImage: car?.imageUrl,
@@ -87,7 +92,8 @@ export default function BookingModal({ car }) {
         const res = await fetch('http://localhost:5000/bookings', {
             method: "POST",
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                authorization: `Bearer ${tokenData?.token}`
             },
             body: JSON.stringify(bookingData)
         });
@@ -95,7 +101,6 @@ export default function BookingModal({ car }) {
         const data = await res.json();
         console.log('is submitted', data);
 
-        // ✅ সার্ভার রেসপন্স সফল (res.ok) হলেই কেবল সাকসেস মেসেজ ও রিডাইরেক্ট হবে
         if (res.ok) {
             setTimeout(() => {
                 setIsSubmitting(false);
@@ -104,13 +109,11 @@ export default function BookingModal({ car }) {
                 router.replace('/my-bookings');
             }, 1500);
         } else {
-            // সার্ভার থেকে কোনো এরর মেসেজ আসলে তা দেখাবে
             setIsSubmitting(false);
             toast.error(data.message || "Booking failed on server!");
         }
 
     } catch (error) {
-        // নেটওয়ার্ক বা সার্ভার ডাউন থাকলে এই ব্লক কাজ করবে
         setIsSubmitting(false);
         toast.error("Network error! Could not connect to server.");
         console.error(error);

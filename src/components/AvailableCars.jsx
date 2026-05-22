@@ -12,11 +12,11 @@ const TABS = ["All", "Audi", "Mercedes", "BMW", "Tesla"];
 const AvailableCars = () => {
 
     const [cars, setCars] = useState([])
-    
-    useEffect(()=>{
-        fetch('http://localhost:5000/cars').then(res=> res.json()).then(data => {setCars(data)}).catch(err=>console.error(err))
 
-    },[])
+    useEffect(() => {
+        fetch('http://localhost:5000/cars').then(res => res.json()).then(data => { setCars(data) }).catch(err => console.error(err))
+
+    }, [])
 
 
     const [activeTab, setActiveTab] = useState("All");
@@ -37,15 +37,15 @@ const AvailableCars = () => {
                 </div>
 
                 <div className="relative flex flex-col lg:flex-row items-center justify-center gap-4 mb-12">
-                    
+
                     <div className="inline-flex flex-wrap items-center justify-center gap-1.5 bg-slate-200/60 p-1.5 rounded-2xl border border-slate-300/30 backdrop-blur-sm">
                         {TABS.map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={`relative px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 cursor-pointer ${activeTab === tab
-                                        ? "text-white bg-slate-900 shadow-sm"
-                                        : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                                    ? "text-white bg-slate-900 shadow-sm"
+                                    : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
                                     }`}
                             >
                                 <span className="relative z-10">{tab}</span>
@@ -54,8 +54,8 @@ const AvailableCars = () => {
                     </div>
 
                     <div className="w-full sm:w-auto flex justify-center lg:absolute lg:right-0">
-                        <Link 
-                            href="/cars" 
+                        <Link
+                            href="/cars"
                             className="inline-flex items-center gap-2 bg-white hover:bg-[#FF4D30] text-slate-900 hover:text-white border border-slate-200 hover:border-[#FF4D30] px-6 py-3 rounded-xl text-xs font-bold transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-[#FF4D30]/10 group active:scale-[0.98] w-full sm:w-auto justify-center cursor-pointer"
                         >
                             <span>View All Cars</span>
@@ -70,9 +70,13 @@ const AvailableCars = () => {
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
                     <AnimatePresence mode="popLayout">
-                        {filteredCars.sort(() => 0.5 - Math.random()).slice(0, 6).map((car) => (
-                            <CarCard car={car} key={car._id}></CarCard>
-                        ))}
+                        {[...filteredCars]
+                            .sort((a, b) => (b.booking_count || 0) - (a.booking_count || 0))
+                            .slice(0, 6)
+                            .map((car) => (
+                                <CarCard car={car} key={car._id} />
+                            ))
+                        }
                     </AnimatePresence>
                 </motion.div>
 

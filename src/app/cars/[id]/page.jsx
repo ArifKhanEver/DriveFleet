@@ -10,23 +10,19 @@ const CarDetailsPage = async ({ params }) => {
         headers: await headers()
     })
 
-    console.log(token)
-
-    // Server-side fetching from your backend API
     const res = await fetch(`http://localhost:5000/cars/${id}`, {
         headers: {
             authorization: `Bearer ${token}`
-        },cache: 'no-store'
+        }
     });
-    const car = await res.json();
 
-    console.log("car",car)
+    console.log(token)
+    const car = await res.json();
 
     return (
         <section className="w-full bg-slate-50/40 py-12 lg:py-20 mt-10 min-h-screen">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-                {/* Page Title */}
                 <div className="mb-10">
                     <h1 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">Vehicle Details</h1>
                     <p className="text-slate-500 font-medium mt-2">Explore the premium features of {car.carName}</p>
@@ -34,10 +30,22 @@ const CarDetailsPage = async ({ params }) => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
 
-                    {/* Left Column: Image & Description */}
                     <div className="lg:col-span-7 flex flex-col gap-8">
-                        <div className="relative w-full h-[320px] sm:h-[420px] flex items-center justify-center">
-                            <Image src={car.imageUrl} alt={car.carName} fill priority className="object-contain" />
+                        
+                        <div className="relative w-full h-[320px] sm:h-[420px] flex items-center justify-center  rounded-2xl border border-slate-100 shadow-sm p-6 overflow-hidden">
+                            
+                            <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5 bg-amber-50 text-amber-800 px-3 py-1.5 rounded-full text-xs font-bold border border-amber-100 shadow-sm uppercase">
+                                <span>Booked <strong>{car.booking_count || 0} times</strong> so far</span>
+                            </div>
+
+                            <Image 
+                                src={car.imageUrl} 
+                                alt={car.carName} 
+                                fill 
+                                priority 
+                                sizes="(max-w-768px) 100vw, (max-w-1024px) 50vw, 58vw" 
+                                className="object-contain" 
+                            />
                         </div>
 
                         <div className="bg-white rounded-2xl border border-slate-100 p-8 shadow-sm">
@@ -46,11 +54,9 @@ const CarDetailsPage = async ({ params }) => {
                         </div>
                     </div>
 
-                    {/* Right Column: Sticky Booking Widget */}
                     <div className="lg:col-span-5 lg:sticky lg:top-24">
                         <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-xl flex flex-col gap-6">
 
-                            {/* Row 1: Brand & Availability Status Badge */}
                             <div className="flex justify-between items-center">
                                 <span className="text-xs font-bold text-[#FF4D30] uppercase tracking-wider">
                                     {car.brand}
@@ -60,15 +66,11 @@ const CarDetailsPage = async ({ params }) => {
                                 </div>
                             </div>
 
-                            {/* Row 2: Title, Price (Right-aligned) & Location (Bottom-left) */}
                             <div className="flex justify-between items-start gap-4 -mt-2">
                                 <div className="min-w-0">
-                                    {/* Car Name */}
                                     <h1 className="text-2xl font-black text-slate-950 tracking-tight leading-tight">
                                         {car.carName}
                                     </h1>
-
-                                    {/* Location Layer exactly under the Car Name */}
                                     <div className="flex items-center text-slate-400 space-x-1 mt-2">
                                         <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-slate-400" />
                                         <span className="text-xs font-semibold text-slate-500 truncate">
@@ -76,8 +78,6 @@ const CarDetailsPage = async ({ params }) => {
                                         </span>
                                     </div>
                                 </div>
-
-                                {/* Price Box beautifully side-by-side with Title */}
                                 <div className="text-right flex-shrink-0 flex items-baseline gap-0.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
                                     <span className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight leading-none">
                                         ${car.dailyPrice}
@@ -88,7 +88,6 @@ const CarDetailsPage = async ({ params }) => {
                                 </div>
                             </div>
 
-                            {/* Technical Specifications Grid */}
                             <div className="grid grid-cols-2 gap-4 text-sm">
                                 {[
                                     { icon: Calendar, label: "Year", val: car.year },
@@ -107,8 +106,7 @@ const CarDetailsPage = async ({ params }) => {
                                     </div>
                                 ))}
                             </div>
-
-                            {/* Client-side Modal Trigger */}
+                            
                             <BookingModal car={car} />
                         </div>
                     </div>

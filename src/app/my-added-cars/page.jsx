@@ -5,8 +5,6 @@ import { MyAddedCarDeleteModal } from "@/components/MyAddedCarDeleteModal";
 import { UpdateCarModal } from "@/components/UpdateCarModal";
 import Image from "next/image";
 
-// export const dynamic = "force-dynamic";
-
 const MyAddedCars = async () => {
     const session = await auth.api.getSession({
         headers: await headers(),
@@ -54,6 +52,11 @@ const MyAddedCars = async () => {
                                     alt={car.carName} 
                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                 />
+
+                                <div className="absolute top-3 left-3 z-10 flex items-center gap-1 bg-white/90 backdrop-blur-sm text-amber-700 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-amber-100/60 shadow-sm">
+                                    <span>{car.booking_count || 0} Bookings</span>
+                                </div>
+
                                 <span className={`absolute top-3 right-3 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md border shadow-sm ${
                                     car.availabilityStatus?.toLowerCase() === "available" 
                                         ? "bg-emerald-50 text-emerald-600 border-emerald-100" 
@@ -63,6 +66,7 @@ const MyAddedCars = async () => {
                                 </span>
                             </div>
 
+                            {/* Card Body Info */}
                             <div className="p-5 flex-1 flex flex-col justify-between">
                                 <div>
                                     <div className="flex items-center gap-2 mb-1">
@@ -92,6 +96,7 @@ const MyAddedCars = async () => {
                                     </div>
                                 </div>
 
+                                {/* Card Footer Price & Actions */}
                                 <div className="border-t border-slate-100 pt-4 flex items-center justify-between gap-4">
                                     <div>
                                         <p className="text-[10px] uppercase font-black text-slate-400 tracking-wider">Per Day</p>
