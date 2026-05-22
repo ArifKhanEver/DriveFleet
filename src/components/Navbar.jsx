@@ -299,6 +299,7 @@ const Navbar = () => {
                                         },
                                     },
                                 });
+                                router.refresh();
                                 setIsMobileMenuOpen(false);
                                 // logout logic
                             }}
