@@ -16,31 +16,25 @@ export default function ProfilePage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     
-    // 📊 বুকিং এবং গাড়ির সংখ্যা ডাইনামিক রাখার জন্য স্টেট
     const [stats, setStats] = useState({ bookings: 0, cars: 0 });
     const [statsLoading, setStatsLoading] = useState(true);
 
     const { data: session } = authClient.useSession();
     const user = session?.user;
 
-    // 🔄 পেজ লোড হলে এবং ইউজার ইমেইল পাওয়া গেলে অটোমেটিক ডেটা ফেচ করার হুক
     useEffect(() => {
-        // যদি ইউজার বা ইমেইল এখনও লোড না হয়, তবে ফেচ করবে না
         if (!user?.email) return;
 
         const fetchDashboardData = async () => {
             try {
                 setStatsLoading(true);
                 
-                // ১. বুকিং ডেটা ফেচ (ধরে নিচ্ছি আপনার এন্ডপয়েন্ট http://localhost:5000/bookings)
                 const bookingsRes = await fetch(`https://drive-fleet-sever.vercel.app/bookings?userEmail=${user.email}`);
                 const bookingsData = await bookingsRes.json();
 
-                // ২. নিজের অ্যাড করা গাড়ির ডেটা ফেচ
                 const carsRes = await fetch(`http://localhost:5000/cars?userEmail=${user.email}`);
                 const carsData = await carsRes.json();
 
-                // স্টেটে কাউন্ট সেট করা
                 setStats({
                     bookings: bookingsData.length || 0,
                     cars: carsData.length || 0
@@ -53,9 +47,8 @@ export default function ProfilePage() {
         };
 
         fetchDashboardData();
-    }, [user?.email]); // 👈 ইমেইল যখনই অ্যাভেইলেবল হবে, তখনই এটি রান করবে
+    }, [user?.email]); 
 
-    // সংখ্যাগুলোকে সুন্দরভাবে '01', '04' ফরম্যাটে দেখানোর হেল্পার ফাংশন
     const formatNumber = (num) => String(num).padStart(2, '0');
 
     const handleLogout = async () => {
@@ -153,7 +146,6 @@ export default function ProfilePage() {
                     <div className="md:col-span-2 space-y-6">
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {/* 🛍️ ডাইনামিক টোটাল বুকিং কার্ড */}
                             <Card className="bg-gradient-to-br from-indigo-600 to-indigo-400 text-white p-5 shadow-md shadow-indigo-600/10 rounded-2xl flex flex-row items-center justify-between border-none">
                                 <div className="space-y-1">
                                     <p className="text-xs font-black text-indigo-100 uppercase tracking-wider">My Total Bookings</p>
@@ -166,7 +158,6 @@ export default function ProfilePage() {
                                 </div>
                             </Card>
 
-                            {/* 🚗 ডাইনামিক লিস্টেড ভেহিকেল কার্ড */}
                             <Card className="bg-white border border-slate-100 p-5 shadow-sm rounded-2xl flex flex-row items-center justify-between">
                                 <div className="space-y-1">
                                     <p className="text-xs font-black text-slate-400 uppercase tracking-wider">Vehicles Listed</p>
