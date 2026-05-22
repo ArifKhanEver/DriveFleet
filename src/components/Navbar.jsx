@@ -311,7 +311,7 @@ const Navbar = () => {
                     ) : (
                         <div className="grid grid-cols-2 gap-2 pt-2">
                             <Link
-                                href="auth/login"
+                                href="/auth/login"
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="flex items-center justify-center space-x-1.5 px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200"
                             >
@@ -319,7 +319,7 @@ const Navbar = () => {
                                 <span>Login</span>
                             </Link>
                             <Link
-                                href="auth/register"
+                                href="/auth/register"
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="flex items-center justify-center space-x-1.5 px-4 py-2.5 bg-[#FF4D30] text-white rounded-xl text-sm font-medium shadow-sm"
                             >
