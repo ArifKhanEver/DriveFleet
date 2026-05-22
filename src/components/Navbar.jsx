@@ -255,7 +255,7 @@ const Navbar = () => {
                                 onClick={() => setIsProfileDropdownOpen(false)}
                                 className="flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-[#FF4D30] transition-colors"
                             >
-                                <User2Icon className="h-4 w-4" />
+                                <User2Icon className="h-4 w-4 text-[#FF4D30]" />
                                 <span>My Profile</span>
                             </Link>
                             <Link

@@ -32,7 +32,7 @@ export default function ProfilePage() {
                 const bookingsRes = await fetch(`https://drive-fleet-sever.vercel.app/bookings?userEmail=${user.email}`);
                 const bookingsData = await bookingsRes.json();
 
-                const carsRes = await fetch(`http://localhost:5000/cars?userEmail=${user.email}`);
+                const carsRes = await fetch(`https://drive-fleet-sever.vercel.app/cars?userEmail=${user.email}`);
                 const carsData = await carsRes.json();
 
                 setStats({

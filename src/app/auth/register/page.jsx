@@ -29,8 +29,16 @@ const RegisterPage = () => {
         });
     }, [formData.password]);
 
-    const handleGoogleLogin = () => {
-
+    const handleGoogleLogin = async() => {
+        await authClient.signIn.social({
+            /**
+             * The social provider ID
+             * @example "github", "google", "apple"
+             */
+            provider: "google",
+            callbackURL: "/",
+            errorCallbackURL: "/error",
+        })
     };
 
     const handleSubmit = async (e) => {
