@@ -22,17 +22,30 @@ export default function ProfilePage() {
     const { data: session } = authClient.useSession();
     const user = session?.user;
 
+    
+
     useEffect(() => {
         if (!user?.email) return;
-
+        
         const fetchDashboardData = async () => {
+            const { data: tokenData } = await authClient.token()
+
+            console.log('token',tokenData)
             try {
                 setStatsLoading(true);
                 
-                const bookingsRes = await fetch(`https://drive-fleet-sever.vercel.app/bookings?userEmail=${user.email}`);
+                const bookingsRes = await  fetch(`https://drive-fleet-sever.vercel.app/bookings?userEmail=${user.email}`, {
+                        headers: {
+                            authorization: `Bearer ${tokenData.token}`
+                        }
+                    })
                 const bookingsData = await bookingsRes.json();
 
-                const carsRes = await fetch(`https://drive-fleet-sever.vercel.app/cars?userEmail=${user.email}`);
+                const carsRes = await fetch(`https://drive-fleet-sever.vercel.app/cars?userEmail=${user.email}`, {
+                        headers: {
+                            authorization: `Bearer ${tokenData.token}`
+                        }
+                    });
                 const carsData = await carsRes.json();
 
                 setStats({
