@@ -16,16 +16,16 @@ const BRANDS = [
 
 export default function BrandsCarousel() {
     return (
-        <section className="py-12 bg-white border-y border-slate-100 overflow-hidden">
+        <section className="py-12 bg-white border-y border-slate-100 overflow-hidden w-full">
             <div className="max-w-7xl mx-auto px-4 mb-8">
                 <h3 className="text-center text-sm font-bold text-slate-400 uppercase tracking-widest">
                     Featured Brands
                 </h3>
             </div>
 
-            <div className="relative flex overflow-hidden">
+            <div className="relative w-full overflow-hidden msg-carousel-wrapper">
                 <motion.div
-                    className="flex gap-8 md:gap-14 items-center"
+                    className="flex gap-8 md:gap-14 items-center w-max"
                     animate={{ x: ["0%", "-50%"] }}
                     transition={{
                         duration: 50, 
@@ -34,7 +34,10 @@ export default function BrandsCarousel() {
                     }}
                 >
                     {[...BRANDS, ...BRANDS].map((brand, index) => (
-                        <div key={index} className="flex-shrink-0 w-24 md:w-32 opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0 cursor-pointer">
+                        <div 
+                            key={index} 
+                            className="flex-shrink-0 w-24 md:w-32 opacity-50 hover:opacity-100 transition-opacity grayscale hover:grayscale-0 cursor-pointer"
+                        >
                             <div className="relative h-12 w-full">
                                 <Image 
                                     src={brand.src} 
