@@ -1,18 +1,31 @@
 import Image from "next/image";
 import { Gauge, Users, Fuel, Calendar, MapPin, DoorOpen, BriefcaseBusiness, CheckCircle } from "lucide-react";
 import BookingModal from "@/components/BookingModal";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
 const CarDetailsPage = async ({ params }) => {
     const { id } = await params;
+    const { token } = await auth.api.getToken({
+        headers: await headers()
+    })
+
+    console.log(token)
 
     // Server-side fetching from your backend API
-    const res = await fetch(`http://localhost:5000/cars/${id}`);
+    const res = await fetch(`http://localhost:5000/cars/${id}`, {
+        headers: {
+            authorization: `Bearer ${token}`
+        },cache: 'no-store'
+    });
     const car = await res.json();
+
+    console.log("car",car)
 
     return (
         <section className="w-full bg-slate-50/40 py-12 lg:py-20 mt-10 min-h-screen">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                
+
                 {/* Page Title */}
                 <div className="mb-10">
                     <h1 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">Vehicle Details</h1>
@@ -20,7 +33,7 @@ const CarDetailsPage = async ({ params }) => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-                    
+
                     {/* Left Column: Image & Description */}
                     <div className="lg:col-span-7 flex flex-col gap-8">
                         <div className="relative w-full h-[320px] sm:h-[420px] flex items-center justify-center">
@@ -36,7 +49,7 @@ const CarDetailsPage = async ({ params }) => {
                     {/* Right Column: Sticky Booking Widget */}
                     <div className="lg:col-span-5 lg:sticky lg:top-24">
                         <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-xl flex flex-col gap-6">
-                            
+
                             {/* Row 1: Brand & Availability Status Badge */}
                             <div className="flex justify-between items-center">
                                 <span className="text-xs font-bold text-[#FF4D30] uppercase tracking-wider">
@@ -54,7 +67,7 @@ const CarDetailsPage = async ({ params }) => {
                                     <h1 className="text-2xl font-black text-slate-950 tracking-tight leading-tight">
                                         {car.carName}
                                     </h1>
-                                    
+
                                     {/* Location Layer exactly under the Car Name */}
                                     <div className="flex items-center text-slate-400 space-x-1 mt-2">
                                         <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-slate-400" />

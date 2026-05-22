@@ -33,7 +33,7 @@ const CarCard = ({ car }) => {
                     <div className="relative w-full h-full transform group-hover:scale-105 transition-transform duration-500">
                         <Image
                             src={car.imageUrl}
-                            alt={car.name}
+                            alt={car?.name}
                             fill
                             sizes="(max-w-7xl) 33vw"
                             className="object-contain"

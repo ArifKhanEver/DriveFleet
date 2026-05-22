@@ -52,56 +52,70 @@ export default function BookingModal({ car }) {
         }
     }
 
-    const handleConfirmBooking = async (e) => {
-        e.preventDefault();
-        if (!user?.email) {
-            toast.error('You must be logged in to add a car!');
-            return;
-        }
+   const handleConfirmBooking = async (e) => {
+    e.preventDefault();
+    if (!user?.email) {
+        toast.error('You must be logged in to book a car!'); // 💡 টোস্ট মেসেজের টাইপো ঠিক করা হয়েছে (add -> book)
+        return;
+    }
 
-        const formData = new FormData(e.currentTarget);
-        const rawValues = Object.fromEntries(formData);
+    const formData = new FormData(e.currentTarget);
+    const rawValues = Object.fromEntries(formData);
 
-        if (!rawValues.startDate || !rawValues.endDate) {
-            toast.error("Please select both Pick-up and Drop-off dates!");
-            return;
-        }
+    if (!rawValues.startDate || !rawValues.endDate) {
+        toast.error("Please select both Pick-up and Drop-off dates!");
+        return;
+    }
 
-        setIsSubmitting(true);
+    setIsSubmitting(true);
 
-        const bookingData = {
-            carId: car?._id,
-            userEmail: user?.email,
-            carName: car?.carName,
-            carImage: car?.imageUrl,
-            startDate: rawValues.startDate,
-            endDate: rawValues.endDate,
-            specialNote: rawValues.specialNote || "",
-            driverNeeded: !!rawValues.driverNeeded,
-            totalDays: totalDays,
-            totalPrice: finalTotalPrice,
-            bookingDate: new Date().toISOString(),
-        };
+    const bookingData = {
+        carId: car?._id, // 🔥 এটি ব্যাকএন্ডের $inc এর জন্য ১০০% সঠিক আছে
+        userEmail: user?.email,
+        carName: car?.carName,
+        carImage: car?.imageUrl,
+        startDate: rawValues.startDate,
+        endDate: rawValues.endDate,
+        specialNote: rawValues.specialNote || "",
+        driverNeeded: !!rawValues.driverNeeded,
+        totalDays: totalDays,
+        totalPrice: finalTotalPrice,
+        bookingDate: new Date().toISOString(),
+    };
 
+    try {
         const res = await fetch('http://localhost:5000/bookings', {
             method: "POST",
             headers: {
-                'content-type':'application/json'
+                'content-type': 'application/json'
             },
             body: JSON.stringify(bookingData)
-        })
+        });
 
         const data = await res.json();
+        console.log('is submitted', data);
 
-        console.log('is submitted', data)
-
-        setTimeout(() => {
+        // ✅ সার্ভার রেসপন্স সফল (res.ok) হলেই কেবল সাকসেস মেসেজ ও রিডাইরেক্ট হবে
+        if (res.ok) {
+            setTimeout(() => {
+                setIsSubmitting(false);
+                setIsOpen(false);
+                toast.success("Booking Confirmation Successful!");
+                router.replace('/my-bookings');
+            }, 1500);
+        } else {
+            // সার্ভার থেকে কোনো এরর মেসেজ আসলে তা দেখাবে
             setIsSubmitting(false);
-            setIsOpen(false);
-            toast.success("Booking Confirmation Successful!");
-            router.replace('/my-bookings')
-        }, 1500);
-    };
+            toast.error(data.message || "Booking failed on server!");
+        }
+
+    } catch (error) {
+        // নেটওয়ার্ক বা সার্ভার ডাউন থাকলে এই ব্লক কাজ করবে
+        setIsSubmitting(false);
+        toast.error("Network error! Could not connect to server.");
+        console.error(error);
+    }
+};
 
     return (
         <>

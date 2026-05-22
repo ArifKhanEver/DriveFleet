@@ -6,7 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 import {
     Car, LogIn, UserPlus, LogOut, PlusCircle,
     Briefcase, CheckSquare, Menu, X, ChevronDown,
-    CarFrontIcon
+    CarFrontIcon,
+    User2Icon
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
@@ -41,7 +42,7 @@ const Navbar = () => {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
-    
+
     const isActive = (path) => pathname === path;
 
     return (
@@ -145,6 +146,14 @@ const Navbar = () => {
                                             <span>Add Car</span>
                                         </Link>
                                         <Link
+                                            href="/my-profile"
+                                            onClick={() => setIsProfileDropdownOpen(false)}
+                                            className="flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-[#FF4D30] transition-colors"
+                                        >
+                                            <User2Icon className="h-4 w-4" />
+                                            <span>My Profile</span>
+                                        </Link>
+                                        <Link
                                             href="/my-bookings"
                                             onClick={() => setIsProfileDropdownOpen(false)}
                                             className="flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-[#FF4D30] transition-colors"
@@ -162,12 +171,12 @@ const Navbar = () => {
                                         </Link>
                                         <hr className="border-slate-100 dark:border-slate-800 my-1" />
                                         <button
-                                            onClick={async() => {
+                                            onClick={async () => {
                                                 await authClient.signOut({
                                                     fetchOptions: {
                                                         onSuccess: () => {
                                                             toast.error("Logged Out");
-                                                            router.replace("/auth/login"); 
+                                                            router.replace("/auth/login");
                                                             router.refresh();
                                                         },
                                                     },
