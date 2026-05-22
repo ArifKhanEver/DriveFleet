@@ -26,7 +26,7 @@ const MyAddedCars = async () => {
     const myCars = await res.json();
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-8 bg-slate-50/50 min-h-screen mt-12 lg:mt-20">
+        <div className="max-w-7xl mx-auto px-4 py-8 bg-slate-50/50 min-h-screen mt-20">
             <div className="mb-8">
                 <h1 className="text-3xl font-black text-slate-900 tracking-tight">My Added Cars</h1>
                 <p className="text-sm text-slate-500 font-semibold mt-1">
