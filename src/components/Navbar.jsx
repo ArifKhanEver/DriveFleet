@@ -255,7 +255,7 @@ const Navbar = () => {
                                 onClick={() => setIsProfileDropdownOpen(false)}
                                 className="flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-[#FF4D30] transition-colors"
                             >
-                                <User2Icon className="h-4 w-4 text-[#FF4D30]" />
+                                <User2Icon className="h-4 w-4" />
                                 <span>My Profile</span>
                             </Link>
                             <Link
@@ -289,17 +289,7 @@ const Navbar = () => {
 
                     {user ? (
                         <button
-                            onClick={async () => {
-                                await authClient.signOut({
-                                    fetchOptions: {
-                                        onSuccess: () => {
-                                            toast.error("Logged Out");
-                                            router.replace("/auth/login");
-                                            router.refresh();
-                                        },
-                                    },
-                                });
-                                router.refresh();
+                            onClick={() => {
                                 setIsMobileMenuOpen(false);
                                 // logout logic
                             }}
@@ -311,7 +301,7 @@ const Navbar = () => {
                     ) : (
                         <div className="grid grid-cols-2 gap-2 pt-2">
                             <Link
-                                href="/auth/login"
+                                href="/login"
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="flex items-center justify-center space-x-1.5 px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200"
                             >
@@ -319,7 +309,7 @@ const Navbar = () => {
                                 <span>Login</span>
                             </Link>
                             <Link
-                                href="/auth/register"
+                                href="/register"
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="flex items-center justify-center space-x-1.5 px-4 py-2.5 bg-[#FF4D30] text-white rounded-xl text-sm font-medium shadow-sm"
                             >
