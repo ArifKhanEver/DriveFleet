@@ -57,7 +57,6 @@ export default function BookingModal({ car }) {
     e.preventDefault();
 
     const {data:tokenData} = await authClient.token()
-    console.log("from modal",tokenData)
 
     if (!user?.email) {
         toast.error('You must be logged in to book a car!');
@@ -67,7 +66,6 @@ export default function BookingModal({ car }) {
     const formData = new FormData(e.target);
     const rawValues = Object.fromEntries(formData);
 
-    console.log('raw values',rawValues)
 
     if (!rawValues.startDate || !rawValues.endDate) {
         toast.error("Please select both Pick-up and Drop-off dates!");

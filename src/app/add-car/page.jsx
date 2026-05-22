@@ -12,13 +12,15 @@ export default function AddCarPage() {
 
     const handleAddCar = async (e) => {
         e.preventDefault();
+        const { data: tokenData } = await authClient.token()
+
         if (!user?.email) {
             toast.error('You must be logged in to add a car!');
             return;
         }
         setLoading(true);
 
-        const formData = new FormData(e.currentTarget);
+        const formData = new FormData(e.target);
         const carData = Object.fromEntries(formData.entries());
 
         carData.dailyPrice = parseFloat(carData.dailyPrice);
@@ -30,7 +32,10 @@ export default function AddCarPage() {
         try {
             const res = await fetch('https://drive-fleet-sever.vercel.app/cars', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                'content-type': 'application/json',
+                authorization: `Bearer ${tokenData?.token}`
+            },
                 body: JSON.stringify(carData)
             });
             const data = await res.json();

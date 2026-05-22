@@ -1,5 +1,6 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import { Button, Modal } from "@heroui/react";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -8,19 +9,22 @@ import toast from "react-hot-toast";
 export function MyAddedCarDeleteModal({ car }) {
     const router = useRouter()
     const handleDelete = async () => {
+        const { data: tokenData } = await authClient.token()
+
         if (!car?._id) return;
 
         try {
             const res = await fetch(`https://drive-fleet-sever.vercel.app/cars/${car._id}`, {
                 method: 'DELETE',
                 headers: {
-                    'content-type': 'application/json'
-                }
+                'content-type': 'application/json',
+                authorization: `Bearer ${tokenData?.token}`
+            }
             });
 
-            if(res.ok) {
+            if (res.ok) {
                 toast.success('Car deleted successfully');
-                router.replace('/my-added-cars'); 
+                router.replace('/my-added-cars');
             }
 
         } catch (error) {
@@ -35,7 +39,7 @@ export function MyAddedCarDeleteModal({ car }) {
                 >
                     <Trash2 className="size-3.5" /> Delete
                 </Button>
-                
+
 
                 <Modal.Backdrop className="backdrop-blur-sm bg-black/40">
                     <Modal.Container>

@@ -1,5 +1,6 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import { Button, Modal } from "@heroui/react";
 import { Edit3, DollarSign, MapPin, Tag, ClipboardList, Image as ImageIcon, AlignLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -11,25 +12,28 @@ export function UpdateCarModal({ car }) {
     const [loading, setLoading] = useState(false);
 
     const handleUpdate = async (e, closeModal) => {
-        e.preventDefault(); 
+        e.preventDefault();
+        const { data: tokenData } = await authClient.token()
+
         setLoading(true);
 
-        const formData = new FormData(e.currentTarget);
+        const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
 
         try {
             const res = await fetch(`https://drive-fleet-sever.vercel.app/cars/${car._id}`, {
                 method: 'PATCH',
                 headers: {
-                    'content-type': 'application/json'
+                    'content-type': 'application/json',
+                    authorization: `Bearer ${tokenData?.token}`
                 },
                 body: JSON.stringify(data)
             });
 
             if (res.ok) {
                 toast.success('Vehicle updated successfully!');
-                closeModal();     
-                router.refresh();   
+                closeModal();
+                router.refresh();
             } else {
                 toast.error('Failed to update vehicle');
             }
@@ -70,7 +74,7 @@ export function UpdateCarModal({ car }) {
                                                 <label className="text-xs font-black text-slate-700 flex items-center gap-1.5 uppercase">
                                                     <DollarSign className="size-3.5 text-indigo-500" /> Daily Price ($)
                                                 </label>
-                                                <input 
+                                                <input
                                                     name="price"
                                                     type="number"
                                                     defaultValue={car?.dailyPrice || ""}
@@ -83,7 +87,7 @@ export function UpdateCarModal({ car }) {
                                                 <label className="text-xs font-black text-slate-700 flex items-center gap-1.5 uppercase">
                                                     <Tag className="size-3.5 text-indigo-500" /> Vehicle Type
                                                 </label>
-                                                <input 
+                                                <input
                                                     name="type"
                                                     type="text"
                                                     defaultValue={car?.carType || ""}
@@ -99,7 +103,7 @@ export function UpdateCarModal({ car }) {
                                                 <label className="text-xs font-black text-slate-700 flex items-center gap-1.5 uppercase">
                                                     <MapPin className="size-3.5 text-emerald-500" /> Pickup Location
                                                 </label>
-                                                <input 
+                                                <input
                                                     name="location"
                                                     type="text"
                                                     defaultValue={car?.pickupLocation || ""}
@@ -112,7 +116,7 @@ export function UpdateCarModal({ car }) {
                                                 <label className="text-xs font-black text-slate-700 flex items-center gap-1.5 uppercase">
                                                     <ClipboardList className="size-3.5 text-amber-500" /> Availability
                                                 </label>
-                                                <select 
+                                                <select
                                                     name="availability"
                                                     defaultValue={car?.availabilityStatus || "Available"}
                                                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 focus:outline-indigo-500 transition-all h-[42px]"
@@ -127,7 +131,7 @@ export function UpdateCarModal({ car }) {
                                             <label className="text-xs font-black text-slate-700 flex items-center gap-1.5 uppercase">
                                                 <ImageIcon className="size-3.5 text-blue-500" /> Image URL
                                             </label>
-                                            <input 
+                                            <input
                                                 name="image"
                                                 type="url"
                                                 defaultValue={car?.imageUrl || ""}
@@ -141,7 +145,7 @@ export function UpdateCarModal({ car }) {
                                             <label className="text-xs font-black text-slate-700 flex items-center gap-1.5 uppercase">
                                                 <AlignLeft className="size-3.5 text-slate-500" /> Description
                                             </label>
-                                            <textarea 
+                                            <textarea
                                                 name="description"
                                                 rows="3"
                                                 defaultValue={car?.description || ""}

@@ -1,5 +1,6 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import { Button, Modal } from "@heroui/react";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -8,13 +9,16 @@ import toast from "react-hot-toast";
 export function BookingDeleteModal({ booking }) {
     const router = useRouter()
     const handleDelete = async () => {
+        const { data: tokenData } = await authClient.token()
+
         if (!booking?._id) return;
 
         try {
             const res = await fetch(`https://drive-fleet-sever.vercel.app/bookings/${booking._id}`, {
                 method: 'DELETE',
                 headers: {
-                    'content-type': 'application/json'
+                    'content-type': 'application/json',
+                    authorization: `Bearer ${tokenData?.token}`
                 }
             });
             const data = await res.json();
