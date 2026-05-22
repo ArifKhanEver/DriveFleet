@@ -289,7 +289,16 @@ const Navbar = () => {
 
                     {user ? (
                         <button
-                            onClick={() => {
+                            onClick={async () => {
+                                await authClient.signOut({
+                                    fetchOptions: {
+                                        onSuccess: () => {
+                                            toast.error("Logged Out");
+                                            router.replace("/auth/login");
+                                            router.refresh();
+                                        },
+                                    },
+                                });
                                 setIsMobileMenuOpen(false);
                                 // logout logic
                             }}

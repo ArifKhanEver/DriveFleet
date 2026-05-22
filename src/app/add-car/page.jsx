@@ -52,7 +52,7 @@ export default function AddCarPage() {
     };
 
     return (
-        <main className="min-h-screen bg-slate-50/50 py-12 px-4 sm:px-6 lg:px-8 font-sans lg:mt-20">
+        <main className="min-h-screen bg-slate-50/50 py-12 px-4 sm:px-6 lg:px-8 font-sans mt-20">
             <div className="max-w-3xl mx-auto bg-white border border-slate-200/80 rounded-2xl shadow-xl shadow-slate-100/50 overflow-hidden relative">
 
                 <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#FF4D30]" />

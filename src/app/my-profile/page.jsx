@@ -71,7 +71,7 @@ export default function ProfilePage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50/50 py-12 lg:py-18 px-4 sm:px-6 lg:px-8 mt-12 lg:mt-20">
+        <div className="min-h-screen bg-slate-50/50 py-12 lg:py-18 px-4 sm:px-6 lg:px-8 mt-20">
             <div className="max-w-5xl mx-auto space-y-8">
 
                 <div className="flex flex-col gap-1 border-b border-slate-200 pb-5">
