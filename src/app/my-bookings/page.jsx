@@ -23,7 +23,7 @@ export default async function MyBookingsPage() {
     const bookings = await res.json();
 
     return (
-        <div className="min-h-screen bg-slate-50/50 py-12 px-4 sm:px-6 lg:px-8 mt-12 lg:mt-24">
+        <div className="min-h-screen bg-slate-50/50 py-12 px-4 sm:px-6 lg:px-8 mt-20">
             <div className="max-w-6xl mx-auto">
 
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200/60 pb-8 mb-10 gap-4">

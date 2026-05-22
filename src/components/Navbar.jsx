@@ -252,7 +252,7 @@ const Navbar = () => {
                             <p className="px-4 text-xs font-medium text-slate-400 uppercase tracking-wider">Profile Options</p>
                             <Link
                                 href="/my-profile"
-                                onClick={() => setIsProfileDropdownOpen(false)}
+                                onClick={() => setIsMobileMenuOpen(false)}
                                 className="flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-[#FF4D30] transition-colors"
                             >
                                 <User2Icon className="h-4 w-4 text-[#FF4D30]" />

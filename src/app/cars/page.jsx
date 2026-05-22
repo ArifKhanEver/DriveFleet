@@ -28,7 +28,7 @@ export default function ExploreCarsPage() {
     }, [searchQuery, typeQuery]);
 
     return (
-        <main className="min-h-screen bg-[#F8FAFC] py-14 lg:py-20 mt-10 antialiased">
+        <main className="min-h-screen bg-[#F8FAFC] py-14 lg:py-20 mt-20 antialiased">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
                 {/* Responsive grid to eliminate empty space on desktop */}
