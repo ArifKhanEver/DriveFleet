@@ -1,7 +1,7 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import { Card, Button, Chip, Avatar } from "@heroui/react";
+import { Card, Button, Chip } from "@heroui/react";
 import {
     User, Mail, MapPin, Calendar, Car,
     ShoppingBag, PlusCircle, ArrowRight, ShieldCheck, LogOut
@@ -9,15 +9,54 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react"; 
 import toast from "react-hot-toast";
 
 export default function ProfilePage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    
+    // 📊 বুকিং এবং গাড়ির সংখ্যা ডাইনামিক রাখার জন্য স্টেট
+    const [stats, setStats] = useState({ bookings: 0, cars: 0 });
+    const [statsLoading, setStatsLoading] = useState(true);
 
     const { data: session } = authClient.useSession();
     const user = session?.user;
+
+    // 🔄 পেজ লোড হলে এবং ইউজার ইমেইল পাওয়া গেলে অটোমেটিক ডেটা ফেচ করার হুক
+    useEffect(() => {
+        // যদি ইউজার বা ইমেইল এখনও লোড না হয়, তবে ফেচ করবে না
+        if (!user?.email) return;
+
+        const fetchDashboardData = async () => {
+            try {
+                setStatsLoading(true);
+                
+                // ১. বুকিং ডেটা ফেচ (ধরে নিচ্ছি আপনার এন্ডপয়েন্ট http://localhost:5000/bookings)
+                const bookingsRes = await fetch(`https://drive-fleet-sever.vercel.app/bookings?userEmail=${user.email}`);
+                const bookingsData = await bookingsRes.json();
+
+                // ২. নিজের অ্যাড করা গাড়ির ডেটা ফেচ
+                const carsRes = await fetch(`http://localhost:5000/cars?userEmail=${user.email}`);
+                const carsData = await carsRes.json();
+
+                // স্টেটে কাউন্ট সেট করা
+                setStats({
+                    bookings: bookingsData.length || 0,
+                    cars: carsData.length || 0
+                });
+            } catch (error) {
+                console.error("Dashboard data fetching failed:", error);
+            } finally {
+                setStatsLoading(false);
+            }
+        };
+
+        fetchDashboardData();
+    }, [user?.email]); // 👈 ইমেইল যখনই অ্যাভেইলেবল হবে, তখনই এটি রান করবে
+
+    // সংখ্যাগুলোকে সুন্দরভাবে '01', '04' ফরম্যাটে দেখানোর হেল্পার ফাংশন
+    const formatNumber = (num) => String(num).padStart(2, '0');
 
     const handleLogout = async () => {
         setLoading(true);
@@ -55,13 +94,15 @@ export default function ProfilePage() {
 
                     <Card className="md:col-span-1 bg-white border border-slate-100 p-6 flex flex-col items-center text-center shadow-sm rounded-2xl h-fit">
                         <div className="relative group">
-                            <Image
-                                width={200}
-                                height={200}
-                                src={user?.image}
-                                alt=""
-                                className="w-28 h-28 text-large border-4 border-indigo-50 shadow-md group-hover:scale-105 transition-transform duration-300"
-                            />
+                            {user?.image && (
+                                <Image
+                                    width={200}
+                                    height={200}
+                                    src={user.image}
+                                    alt=""
+                                    className="w-28 h-28 text-large border-4 border-indigo-50 shadow-md group-hover:scale-105 transition-transform duration-300 rounded-full object-cover"
+                                />
+                            )}
                             <div className="absolute bottom-1 right-1 bg-emerald-500 p-1.5 rounded-full border-2 border-white shadow-sm" />
                         </div>
 
@@ -69,7 +110,6 @@ export default function ProfilePage() {
                             {user?.name || "Guest User"}
                         </h2>
 
-                        {/* ✅ Fix 1: startContent সরিয়ে সরাসরি চাইল্ড হিসেবে আইকন ও টেক্সট ব্যবহার করা হয়েছে */}
                         <Chip
                             className="mt-2 bg-indigo-50 text-indigo-600 font-extrabold border border-indigo-100 uppercase tracking-wider text-[10px]"
                             variant="flat"
@@ -93,7 +133,6 @@ export default function ProfilePage() {
                             </div>
                             <div className="flex items-center gap-3 bg-slate-50 p-2.5 rounded-xl border border-slate-100/50">
                                 <Calendar className="size-4 text-amber-500 shrink-0" />
-                                {/* ✅ Fix 2: Date Object-কে .toLocaleDateString() দিয়ে টেক্সট-এ কনভার্ট করা হয়েছে */}
                                 <span className="text-xs">
                                     Joined {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : "N/A"}
                                 </span>
@@ -114,20 +153,26 @@ export default function ProfilePage() {
                     <div className="md:col-span-2 space-y-6">
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <Card className="bg-gradient-to-br from-green-600 to-green-400 text-white p-5 shadow-md shadow-indigo-600/10 rounded-2xl flex flex-row items-center justify-between border-none">
+                            {/* 🛍️ ডাইনামিক টোটাল বুকিং কার্ড */}
+                            <Card className="bg-gradient-to-br from-indigo-600 to-indigo-400 text-white p-5 shadow-md shadow-indigo-600/10 rounded-2xl flex flex-row items-center justify-between border-none">
                                 <div className="space-y-1">
                                     <p className="text-xs font-black text-indigo-100 uppercase tracking-wider">My Total Bookings</p>
-                                    <h3 className="text-3xl font-black">04</h3>
+                                    <h3 className="text-3xl font-black">
+                                        {statsLoading ? "--" : formatNumber(stats.bookings)}
+                                    </h3>
                                 </div>
                                 <div className="bg-indigo-500/30 p-3 rounded-xl backdrop-blur-md">
                                     <ShoppingBag className="size-6 text-white" />
                                 </div>
                             </Card>
 
+                            {/* 🚗 ডাইনামিক লিস্টেড ভেহিকেল কার্ড */}
                             <Card className="bg-white border border-slate-100 p-5 shadow-sm rounded-2xl flex flex-row items-center justify-between">
                                 <div className="space-y-1">
                                     <p className="text-xs font-black text-slate-400 uppercase tracking-wider">Vehicles Listed</p>
-                                    <h3 className="text-3xl font-black text-slate-800">03</h3>
+                                    <h3 className="text-3xl font-black text-slate-800">
+                                        {statsLoading ? "--" : formatNumber(stats.cars)}
+                                    </h3>
                                 </div>
                                 <div className="bg-emerald-50 text-emerald-600 p-3 rounded-xl border border-emerald-100">
                                     <Car className="size-6" />
