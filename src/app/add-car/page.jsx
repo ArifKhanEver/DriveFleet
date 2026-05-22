@@ -28,7 +28,7 @@ export default function AddCarPage() {
 
 
         try {
-            const res = await fetch('http://localhost:5000/cars', {
+            const res = await fetch('https://drive-fleet-sever.vercel.app/cars', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(carData)

@@ -14,7 +14,7 @@ export default function ExploreCarsPage() {
         (async()=>{
             try {
                 const res = await fetch(
-                    `http://localhost:5000/cars?search=${searchQuery}&type=${typeQuery}`
+                    `https://drive-fleet-sever.vercel.app/cars?search=${searchQuery}&type=${typeQuery}`
                 );
                 const data = await res.json();
                 setCars(data);

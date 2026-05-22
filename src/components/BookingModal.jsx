@@ -56,16 +56,18 @@ export default function BookingModal({ car }) {
    const handleConfirmBooking = async (e) => {
     e.preventDefault();
 
-    const {data:tokenData} = authClient.token()
-
+    const {data:tokenData} = await authClient.token()
+    console.log("from modal",tokenData)
 
     if (!user?.email) {
         toast.error('You must be logged in to book a car!');
         return;
     }
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(e.target);
     const rawValues = Object.fromEntries(formData);
+
+    console.log('raw values',rawValues)
 
     if (!rawValues.startDate || !rawValues.endDate) {
         toast.error("Please select both Pick-up and Drop-off dates!");
@@ -89,7 +91,7 @@ export default function BookingModal({ car }) {
     };
 
     try {
-        const res = await fetch('http://localhost:5000/bookings', {
+        const res = await fetch('https://drive-fleet-sever.vercel.app/bookings', {
             method: "POST",
             headers: {
                 'content-type': 'application/json',

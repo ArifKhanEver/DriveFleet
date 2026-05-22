@@ -11,7 +11,7 @@ export function BookingDeleteModal({ booking }) {
         if (!booking?._id) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/bookings/${booking._id}`, {
+            const res = await fetch(`https://drive-fleet-sever.vercel.app/bookings/${booking._id}`, {
                 method: 'DELETE',
                 headers: {
                     'content-type': 'application/json'

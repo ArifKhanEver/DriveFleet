@@ -18,7 +18,7 @@ export function UpdateCarModal({ car }) {
         const data = Object.fromEntries(formData.entries());
 
         try {
-            const res = await fetch(`http://localhost:5000/cars/${car._id}`, {
+            const res = await fetch(`https://drive-fleet-sever.vercel.app/cars/${car._id}`, {
                 method: 'PATCH',
                 headers: {
                     'content-type': 'application/json'

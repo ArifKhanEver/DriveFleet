@@ -14,7 +14,7 @@ const AvailableCars = () => {
     const [cars, setCars] = useState([])
 
     useEffect(() => {
-        fetch('http://localhost:5000/cars').then(res => res.json()).then(data => { setCars(data) }).catch(err => console.error(err))
+        fetch('https://drive-fleet-sever.vercel.app/cars').then(res => res.json()).then(data => { setCars(data) }).catch(err => console.error(err))
 
     }, [])
 

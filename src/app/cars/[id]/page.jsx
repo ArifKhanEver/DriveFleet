@@ -10,7 +10,7 @@ const CarDetailsPage = async ({ params }) => {
         headers: await headers()
     })
 
-    const res = await fetch(`http://localhost:5000/cars/${id}`, {
+    const res = await fetch(`https://drive-fleet-sever.vercel.app/cars/${id}`, {
         headers: {
             authorization: `Bearer ${token}`
         }

@@ -20,7 +20,7 @@ const MyAddedCars = async () => {
         );
     }
 
-    const res = await fetch(`http://localhost:5000/cars?userEmail=${user.email}`, {
+    const res = await fetch(`https://drive-fleet-sever.vercel.app/cars?userEmail=${user.email}`, {
         cache: "no-store",
     });
     const myCars = await res.json();

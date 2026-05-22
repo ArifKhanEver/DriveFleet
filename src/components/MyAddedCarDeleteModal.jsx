@@ -11,7 +11,7 @@ export function MyAddedCarDeleteModal({ car }) {
         if (!car?._id) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/cars/${car._id}`, {
+            const res = await fetch(`https://drive-fleet-sever.vercel.app/cars/${car._id}`, {
                 method: 'DELETE',
                 headers: {
                     'content-type': 'application/json'
