@@ -15,7 +15,7 @@ export default async function MyBookingsPage() {
             headers: await headers()
         })
 
-    const res = await fetch(`http://localhost:5000/bookings?userEmail=${user.email}`, {
+    const res = await fetch(`https://drive-fleet-sever.vercel.app/bookings?userEmail=${user.email}`, {
         headers: {
             authorization: `Bearer ${token}`
         }
