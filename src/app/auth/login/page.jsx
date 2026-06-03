@@ -35,7 +35,6 @@ const LoginPage = () => {
     const handleGoogleLogin = async() => {
         await authClient.signIn.social({
             /**
-             * The social provider ID
              * @example "github", "google", "apple"
              */
             provider: "google",

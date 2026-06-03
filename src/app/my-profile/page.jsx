@@ -23,7 +23,6 @@ export default function ProfilePage() {
     const user = session?.user;
 
     
-
     useEffect(() => {
         if (!user?.email) return;
         
