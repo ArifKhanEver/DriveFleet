@@ -32,6 +32,7 @@ A modern, high-performance, and responsive Full-Stack Car Rental Application bui
 * **Styling & UI Components:** Tailwind CSS & Hero UI (formerly NextUI)
 * **Animations:** Framer Motion
 * **Iconography:** Lucide React
+* **Authentication:** Better auth, JWT
 * **State Management & UI Control:** React Hooks (`useState`, `useEffect`, `useDisclosure`)
 * **Backend Runtime:** Node.js with Express.js *(Ready for integration)*
 * **Database Cluster:** MongoDB Atlas *(Schema ready)*
