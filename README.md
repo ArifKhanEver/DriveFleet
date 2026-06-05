@@ -48,7 +48,7 @@ When adding or managing a car entry, the data object maps the following structur
   "name": "String (e.g., Cadillac Escalade Platinum)",
   "price": "Number (Daily Rent Rate in USD)",
   "carType": "String (SUV / Sedan / Hatchback / Luxury / Sports)",
-  "image": "String (Image URL hosted via imgbb/postimage)",
+  "image": "String",
   "seats": "String (Seat Capacity, e.g., 5 Persons)",
   "location": "String (Detailed Pickup Point Address)",
   "description": "String (Rich text paragraph summarizing vehicle features)",
